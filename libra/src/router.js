@@ -1,13 +1,13 @@
 import React from 'react';
-import { Text } from 'react-native';
 import { Scene, Router } from 'react-native-router-flux';
+import LoginForm from './components/LoginForm';
+import Test from './components/Test';
 
 const RouterComponent = () => {
   return (
     <Router>
-      <Scene key='main'>
-        <Text>Main Scene</Text>
-      </Scene>
+      <Scene key='main' hideNavBar component={LoginForm} />
+      <Scene key='test' hideNavBar={false} component={Test} />
     </Router>
   );
 };
