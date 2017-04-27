@@ -44,7 +44,7 @@ const {
               />
           </View>
           <View style={buttonContainerStyle}>
-          <Button onPress={() => Actions.test()}>Log In</Button>
+          <Button onPress={() => console.log('logging in')}>Log In</Button>
           </View>
           <TouchableOpacity>
             <Text style={textStyle}>
@@ -53,7 +53,7 @@ const {
           </TouchableOpacity>
         </View>
         <View style={createAccountContainerStyle}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => Actions.register()}>
             <Text style={textStyle}>
               Create an account
             </Text>
