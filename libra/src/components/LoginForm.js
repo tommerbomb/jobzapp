@@ -11,7 +11,9 @@ const {
   inputContainerStyle,
   buttonContainerStyle,
   textStyle,
-  createAccountContainerStyle
+  bottomContainerStyle,
+  titleContainerStyle,
+  middleContainerStyle
 } = styles;
 
     return (
@@ -19,17 +21,21 @@ const {
         <StatusBar
           barStyle="light-content"
         />
-        <Text
-        style={{
-          textAlign: 'center',
-          fontSize: 40,
-          color: '#fff',
-          paddingTop: 50
-        }}
-        >
-          Libra
-        </Text>
-        <View>
+
+        <View style={titleContainerStyle}>
+          <Text
+          style={{
+            textAlign: 'center',
+            fontSize: 40,
+            color: '#fff',
+            paddingTop: 50
+          }}
+          >
+            Libra
+          </Text>
+        </View>
+
+        <View style={middleContainerStyle}>
           <View style={inputContainerStyle}>
               <Input
                 placeholder="Email"
@@ -46,13 +52,15 @@ const {
           <View style={buttonContainerStyle}>
           <Button onPress={() => console.log('logging in')}>Log In</Button>
           </View>
-          <TouchableOpacity>
+
+        </View>
+
+        <View style={bottomContainerStyle}>
+          <TouchableOpacity onPress={() => console.log('forgot password')}>
             <Text style={textStyle}>
               Did you forget your password?
             </Text>
           </TouchableOpacity>
-        </View>
-        <View style={createAccountContainerStyle}>
           <TouchableOpacity onPress={() => Actions.register()}>
             <Text style={textStyle}>
               Create an account
@@ -67,11 +75,16 @@ const {
 const styles = {
   inputContainerStyle: {
     padding: 10,
+    paddingBottom: 15,
     justifyContent: 'flex-start',
     flexDirection: 'row',
     position: 'relative',
     marginLeft: 5,
     marginRight: 5,
+  },
+  middleContainerStyle: {
+    paddingTop: 40,
+    flex: 1
   },
   backgroundStyle: {
     backgroundColor: BACKGROUND_COLOR,
@@ -90,8 +103,15 @@ const styles = {
     color: FONT_COLOR,
     textAlign: 'center'
   },
-  createAccountContainerStyle: {
+  bottomContainerStyle: {
+    flex: 1,
+    justifyContent: 'space-between',
     paddingBottom: 15
+  },
+  titleContainerStyle: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center'
   }
 };
 

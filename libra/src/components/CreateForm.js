@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Picker, Text  } from 'react-native';
+import { View, Text } from 'react-native';
 import { Input, Button } from './common';
 import { BACKGROUND_COLOR } from '../styles/GlobalStyles'
 
@@ -11,7 +11,8 @@ class CreateForm extends Component {
       textStyle,
       textContainerStyle,
       containerStyle,
-      inputRowStyle
+      inputRowStyle,
+      buttonContainerStyle
     } = styles;
 
     return (
@@ -59,6 +60,9 @@ class CreateForm extends Component {
               />
             </View>
           </View>
+          <View style={buttonContainerStyle}>
+            <Button onPress={() => console.log('logging in')}>Register</Button>
+          </View>
         </View>
       </View>
     );
@@ -68,7 +72,8 @@ class CreateForm extends Component {
 const styles = {
   backgroundStyle: {
     backgroundColor: BACKGROUND_COLOR,
-    flex: 1
+    flex: 1,
+    justifyContent: 'center'
   },
   inputContainerStyle: {
     padding: 10,
@@ -84,11 +89,14 @@ const styles = {
     paddingLeft: 15
   },
   containerStyle: {
-    padding: 5,
-    paddingTop: 75
+    padding: 5
   },
-  inputRowStyle: {
-
+  buttonContainerStyle: {
+    padding: 10,
+    paddingTop: 25,
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    position: 'relative'
   }
 };
 
