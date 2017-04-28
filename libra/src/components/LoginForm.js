@@ -2,11 +2,24 @@ import React, { Component } from 'react';
 import { View, Text, StatusBar, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
+import firebase from 'firebase';
 import { Button, Input, Spinner } from './common';
 import { emailChanged, passwordChanged, loginUser } from '../actions';
 import { BACKGROUND_COLOR, FONT_COLOR } from '../styles/GlobalStyles';
 
 class LoginForm extends Component {
+
+  componentWillMount() {
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            // User is signed in.
+            console.log(`Signed in as ${user.email}`);
+        } else {
+            // No user is signed in.
+            console.log('Not Signed In');
+        }
+    });
+  }
 
   onPasswordChange(text) {
     this.props.passwordChanged(text);

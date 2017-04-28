@@ -1,9 +1,46 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
+import { connect } from 'react-redux';
 import { Input, Button } from './common';
-import { BACKGROUND_COLOR } from '../styles/GlobalStyles'
+import { BACKGROUND_COLOR } from '../styles/GlobalStyles';
+import {
+  firstNameChanged,
+  lastNameChanged,
+  mobileNumberChanged,
+  registerEmailChanged,
+  registerPasswordChanged,
+  createUser
+} from '../actions';
 
 class CreateForm extends Component {
+
+  onFirstNameChange(text) {
+    console.log(`changed to ${text}`);
+    this.props.firstNameChanged(text);
+  }
+  onLastNameChange(text) {
+    this.props.lastNameChanged(text);
+  }
+
+  onMobileNumberChange(text) {
+    //Could put some logic to format number here
+    this.props.mobileNumberChanged(text);
+  }
+
+  onEmailChange(text) {
+    this.props.registerEmailChanged(text);
+  }
+
+  onPasswordChange(text) {
+    this.props.registerPasswordChanged(text);
+  }
+
+  onButtonPress() {
+    console.log(this.props);
+    const { firstName, lastName, mobileNumber, email, password } = this.props;
+    this.props.createUser({ firstName, lastName, mobileNumber, email, password });
+  }
+
   render() {
     const {
       backgroundStyle,
@@ -23,8 +60,16 @@ class CreateForm extends Component {
               <Text style={textStyle}>Name</Text>
             </View>
             <View style={inputContainerStyle}>
-              <Input placeholder='First Name' />
-              <Input placeholder='Last Name' />
+              <Input
+              placeholder='First Name'
+              onChangeText={this.onFirstNameChange.bind(this)}
+              value={this.props.firstName}
+              />
+              <Input
+              placeholder='Last Name'
+              onChangeText={this.onLastNameChange.bind(this)}
+              value={this.props.lastName}
+              />
             </View>
           </View>
 
@@ -36,6 +81,8 @@ class CreateForm extends Component {
               <Input
               placeholder='(208)-555-5555'
               keyboardType='phone-pad'
+              onChangeText={this.onMobileNumberChange.bind(this)}
+              value={this.props.mobileNumber}
               />
             </View>
           </View>
@@ -45,7 +92,11 @@ class CreateForm extends Component {
               <Text style={textStyle}>Email</Text>
             </View>
             <View style={inputContainerStyle}>
-              <Input placeholder='Email Address' />
+              <Input
+              placeholder='Email Address'
+              onChangeText={this.onEmailChange.bind(this)}
+              value={this.props.email}
+              />
             </View>
           </View>
 
@@ -57,11 +108,13 @@ class CreateForm extends Component {
               <Input
               placeholder='Atleast 5 characters'
               secureTextEntry
+              onChangeText={this.onPasswordChange.bind(this)}
+              value={this.props.password}
               />
             </View>
           </View>
           <View style={buttonContainerStyle}>
-            <Button onPress={() => console.log('logging in')}>Register</Button>
+            <Button onPress={this.onButtonPress.bind(this)}>Register</Button>
           </View>
         </View>
       </View>
@@ -100,4 +153,35 @@ const styles = {
   }
 };
 
-export default CreateForm;
+const mapStateToProps = ({ register }) => {
+  const {
+    firstName,
+    lastName,
+    mobileNumber,
+    email,
+    password,
+    loading,
+    error
+  } = register;
+
+  return {
+    firstName,
+    lastName,
+    mobileNumber,
+    email,
+    password,
+    loading,
+    error
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {
+    firstNameChanged,
+    lastNameChanged,
+    mobileNumberChanged,
+    registerEmailChanged,
+    registerPasswordChanged,
+    createUser
+   })(CreateForm);

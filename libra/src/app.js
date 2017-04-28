@@ -7,10 +7,20 @@ import Router from './router';
 import { config } from './authentication';
 import reducers from './reducers';
 
+
 class App extends Component {
 
   componentWillMount() {
     firebase.initializeApp(config);
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in.
+        console.log(`Signed in as ${user.email}`);
+      } else {
+          // No user is signed in.
+          console.log('Not Signed In');
+      }
+    });
   }
 
   render() {
