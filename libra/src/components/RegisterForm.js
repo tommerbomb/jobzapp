@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { connect } from 'react-redux';
-import { Input, Button } from './common';
-import { BACKGROUND_COLOR } from '../styles/GlobalStyles';
+import { Input, Button, Spinner } from './common';
+import { BACKGROUND_COLOR, ERROR_COLOR } from '../styles/GlobalStyles';
 import {
   firstNameChanged,
   lastNameChanged,
@@ -39,6 +39,13 @@ class RegisterForm extends Component {
     console.log(this.props);
     const { firstName, lastName, mobileNumber, email, password } = this.props;
     this.props.createUser({ firstName, lastName, mobileNumber, email, password });
+  }
+
+  renderButton() {
+    if (this.props.loading) {
+      return (<Spinner />);
+    }
+    return (<Button onPress={this.onButtonPress.bind(this)}>Register</Button>);
   }
 
   render() {
@@ -114,7 +121,10 @@ class RegisterForm extends Component {
             </View>
           </View>
           <View style={buttonContainerStyle}>
-            <Button onPress={this.onButtonPress.bind(this)}>Register</Button>
+            {this.renderButton()}
+          </View>
+          <View>
+          <Text style={styles.errorTextStyle}>{ this.props.error.message }</Text>
           </View>
         </View>
       </View>
@@ -150,6 +160,12 @@ const styles = {
     justifyContent: 'flex-start',
     flexDirection: 'row',
     position: 'relative'
+  },
+  errorTextStyle: {
+    fontSize: 18,
+    alignSelf: 'center',
+    color: ERROR_COLOR,
+    paddingBottom: 10
   }
 };
 

@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import firebase from 'firebase';
 import { Button, Input, Spinner } from './common';
-import { emailChanged, passwordChanged, loginUser } from '../actions';
-import { BACKGROUND_COLOR, FONT_COLOR } from '../styles/GlobalStyles';
+import { emailChanged, passwordChanged, loginUser, registerReset } from '../actions';
+import { BACKGROUND_COLOR, FONT_COLOR, ERROR_COLOR } from '../styles/GlobalStyles';
 
 class LoginForm extends Component {
 
@@ -33,6 +33,11 @@ class LoginForm extends Component {
   console.log(this.props);
   const { email, password } = this.props;
   this.props.loginUser({ email, password });
+}
+
+onCreateAccountPress() {
+  this.props.registerReset();
+  Actions.register();
 }
 
   renderButton() {
@@ -105,7 +110,7 @@ class LoginForm extends Component {
               Did you forget your password?
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => Actions.register()}>
+          <TouchableOpacity onPress={this.onCreateAccountPress.bind(this)}>
             <Text style={textStyle}>
               Create an account
             </Text>
@@ -160,7 +165,7 @@ const styles = {
   errorTextStyle: {
     fontSize: 18,
     alignSelf: 'center',
-    color: 'red',
+    color: ERROR_COLOR,
     paddingBottom: 10
   }
 };
@@ -170,4 +175,4 @@ const mapStateToProps = ({ auth }) => {
   return { email, password, error, loading };
 };
 
-export default connect(mapStateToProps, { passwordChanged, emailChanged, loginUser })(LoginForm);
+export default connect(mapStateToProps, { passwordChanged, emailChanged, loginUser, registerReset })(LoginForm);
