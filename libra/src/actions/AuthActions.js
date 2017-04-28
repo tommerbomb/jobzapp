@@ -7,7 +7,8 @@ import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
   LOGIN_USER,
-  LOGOUT_USER
+  LOGOUT_USER,
+  LOGIN_RESET
 } from './types';
 
 export const emailChanged = (text) => {
@@ -40,6 +41,12 @@ export const logoutUser = () => {
         dispatch({ type: LOGOUT_USER });
         Actions.auth({ type: 'reset' });
       });
+  };
+};
+
+export const loginReset = () => {
+  return dispatch => {
+    dispatch({ type: LOGIN_RESET });
   };
 };
 

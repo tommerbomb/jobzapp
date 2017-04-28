@@ -4,7 +4,8 @@ import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
   LOGIN_USER,
-  LOGOUT_USER
+  LOGOUT_USER,
+  LOGIN_RESET
 } from '../actions/types.js';
 
 const INITIAL_STATE = {
@@ -28,6 +29,8 @@ export default (state = INITIAL_STATE, action) => {
     case LOGIN_USER_FAIL:
     return { ...state, error: 'Login attempt failed', password: '', loading: false };
     case LOGOUT_USER:
+    return INITIAL_STATE;
+    case LOGIN_RESET:
     return INITIAL_STATE;
     default:
     return state;

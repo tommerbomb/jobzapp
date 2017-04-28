@@ -12,7 +12,7 @@ import {
   createUser
 } from '../actions';
 
-class CreateForm extends Component {
+class RegisterForm extends Component {
 
   onFirstNameChange(text) {
     console.log(`changed to ${text}`);
@@ -184,4 +184,4 @@ export default connect(
     registerEmailChanged,
     registerPasswordChanged,
     createUser
-   })(CreateForm);
+  })(RegisterForm);

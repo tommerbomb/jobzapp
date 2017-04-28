@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Scene, Router, Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { logoutUser } from './actions';
+import { logoutUser, loginReset } from './actions';
 import LoginForm from './components/LoginForm';
-import CreateForm from './components/CreateForm';
+import RegisterForm from './components/RegisterForm';
 import MapView from './components/MapView';
 import { BACKGROUND_COLOR } from './styles/GlobalStyles';
 import Test from './components/Test';
@@ -11,10 +11,17 @@ import Test from './components/Test';
 class RouterComponent extends Component {
 
 
-MVonLeft() {
+onLeftMapView() {
   console.log('logging out');
   this.props.logoutUser();
 }
+
+onBackRegister() {
+  this.props.loginReset();
+  Actions.pop();
+}
+
+
   render() {
     const { showNavBarStyle, hideNavBarStyle, navBarTitleStyle } = styles;
 
@@ -23,11 +30,12 @@ MVonLeft() {
           <Scene key='login' hideNavBar component={LoginForm} />
           <Scene
           key='register'
-          component={CreateForm}
+          component={RegisterForm}
           title='Register'
           navigationBarStyle={hideNavBarStyle}
           titleStyle={navBarTitleStyle}
           hideNavBar={false}
+          onBack={this.onBackRegister.bind(this)}
           />
         </Scene>
         <Scene key='main'>
@@ -39,7 +47,7 @@ MVonLeft() {
            titleStyle={navBarTitleStyle}
            hideNavBar={false}
            leftTitle='Log Out'
-           onLeft={this.MVonLeft.bind(this)}
+           onLeft={this.onLeftMapView.bind(this)}
            rightTitle='Test Nav'
            onRight={() => Actions.test()}
           />
@@ -71,4 +79,4 @@ const styles = {
   }
 };
 
-export default connect(null, { logoutUser })(RouterComponent);
+export default connect(null, { logoutUser, loginReset })(RouterComponent);
