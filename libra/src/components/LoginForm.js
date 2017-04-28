@@ -1,20 +1,45 @@
 import React, { Component } from 'react';
 import { View, Text, StatusBar, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { Button, Input, Spinner } from './common';
+import { emailChanged, passwordChanged, loginUser } from '../actions';
 import { BACKGROUND_COLOR, FONT_COLOR } from '../styles/GlobalStyles';
 
 class LoginForm extends Component {
+
+  onPasswordChange(text) {
+    this.props.passwordChanged(text);
+  }
+
+  onEmailChange(text) {
+    this.props.emailChanged(text);
+  }
+
+  onButtonPress() {
+  console.log(this.props);
+  const { email, password } = this.props;
+  this.props.loginUser({ email, password });
+}
+
+  renderButton() {
+    if (this.props.loading) {
+      return (<Spinner />);
+    }
+    return (<Button onPress={this.onButtonPress.bind(this)}>Log In</Button>);
+  }
+
   render() {
-const {
-  backgroundStyle,
-  inputContainerStyle,
-  buttonContainerStyle,
-  textStyle,
-  bottomContainerStyle,
-  titleContainerStyle,
-  middleContainerStyle
-} = styles;
+    const {
+      backgroundStyle,
+      inputContainerStyle,
+      buttonContainerStyle,
+      textStyle,
+      bottomContainerStyle,
+      titleContainerStyle,
+      middleContainerStyle
+    } = styles;
+
 
     return (
       <View style={backgroundStyle}>
@@ -40,6 +65,8 @@ const {
               <Input
                 placeholder="Email"
                 onChangeText={() => console.log('change')}
+                value={this.props.email}
+                onChangeText={this.onEmailChange.bind(this)}
               />
           </View>
           <View style={inputContainerStyle}>
@@ -47,14 +74,18 @@ const {
                 placeholder="Password"
                 onChangeText={() => console.log('change')}
                 secureTextEntry
+                value={this.props.password}
+                onChangeText={this.onPasswordChange.bind(this)}
               />
           </View>
+
           <View style={buttonContainerStyle}>
-          <Button onPress={() => console.log('logging in')}>Log In</Button>
+            {this.renderButton()}
           </View>
-
         </View>
-
+        <View>
+        <Text style={styles.errorTextStyle}>{ this.props.error }</Text>
+        </View>
         <View style={bottomContainerStyle}>
           <TouchableOpacity onPress={() => console.log('forgot password')}>
             <Text style={textStyle}>
@@ -112,7 +143,18 @@ const styles = {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center'
+  },
+  errorTextStyle: {
+    fontSize: 18,
+    alignSelf: 'center',
+    color: 'red',
+    paddingBottom: 10
   }
 };
 
-export default LoginForm;
+const mapStateToProps = ({ auth }) => {
+  const { email, password, error, loading } = auth;
+  return { email, password, error, loading };
+};
+
+export default connect(mapStateToProps, { passwordChanged, emailChanged, loginUser })(LoginForm);
