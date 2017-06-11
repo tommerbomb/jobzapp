@@ -1,37 +1,20 @@
 import {
-  EMAIL_CHANGED,
-  PASSWORD_CHANGED,
-  LOGIN_USER_SUCCESS,
-  LOGIN_USER_FAIL,
-  LOGIN_USER,
-  LOGOUT_USER,
-  LOGIN_RESET
+LOCATION_CHANGED
 } from '../actions/types.js';
 
 const INITIAL_STATE = {
-  email: '',
-  password: '',
-  loading: false,
-  error: '',
-  user: null
+  location: {
+    latitude: 122,
+    longitude: 40,
+    latitudeDelta: 0.1,
+    longitudeDelta: 0.05
+  }
 };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case EMAIL_CHANGED:
-    return { ...state, email: action.payload };
-    case PASSWORD_CHANGED:
-    return { ...state, password: action.payload };
-    case LOGIN_USER:
-    return { ...state, loading: true, error: '' };
-    case LOGIN_USER_SUCCESS:
-    return { ...state, ...INITIAL_STATE, user: action.payload };
-    case LOGIN_USER_FAIL:
-    return { ...state, error: 'Login attempt failed', password: '', loading: false };
-    case LOGOUT_USER:
-    return INITIAL_STATE;
-    case LOGIN_RESET:
-    return INITIAL_STATE;
+    case LOCATION_CHANGED:
+    return { ...state, location: action.payload };
     default:
     return state;
   }

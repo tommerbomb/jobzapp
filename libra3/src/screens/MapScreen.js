@@ -10,7 +10,7 @@ import { BACKGROUND_COLOR } from '../styles/GlobalStyles';
 class MapScreen extends Component {
 
   state = {
-     region: {
+     location: {
        latitude: 122,
        longitude: 40,
        latitudeDelta: 0.1,
@@ -44,8 +44,8 @@ class MapScreen extends Component {
      }
      let location = await Location.getCurrentPositionAsync({});
      this.setState({
-       region: {
-         ...this.state.region,
+       location: {
+         ...this.state.location,
          latitude: location.coords.latitude,
          longitude: location.coords.longitude } });
    };
@@ -56,7 +56,7 @@ class MapScreen extends Component {
    }
 
   render() {
-    const { latitude, longitude, latitudeDelta, longitudeDelta } = this.state.region;
+    const { latitude, longitude, latitudeDelta, longitudeDelta } = this.state.location;
     if (this.state.loading) {
       return <Spinner />;
     }
