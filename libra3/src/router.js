@@ -2,18 +2,19 @@ import React, { Component } from 'react';
 import { Scene, Router, Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { logoutUser, loginReset } from './actions';
-import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
-import MapView from './components/MapView';
+import WelcomeScreen from './screens/WelcomeScreen';
+import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import MapScreen from './screens/MapScreen';
 import { BACKGROUND_COLOR } from './styles/GlobalStyles';
-import Test from './components/Test';
+import Test from './screens/Test';
 
 class RouterComponent extends Component {
 
-
-onLeftMapView() {
+onLeftMapScreen() {
   console.log('logging out');
   this.props.logoutUser();
+  Actions.auth({ type: 'reset' });
 }
 
 onBackRegister() {
@@ -27,11 +28,12 @@ onBackRegister() {
 
     return (
       <Router>
+        <Scene key='welcome' hideNavBar component={WelcomeScreen} />
         <Scene key='auth' >
-          <Scene key='login' hideNavBar component={LoginForm} />
+          <Scene key='login' hideNavBar component={LoginScreen} />
           <Scene
           key='register'
-          component={RegisterForm}
+          component={RegisterScreen}
           title='Register'
           navigationBarStyle={hideNavBarStyle}
           titleStyle={navBarTitleStyle}
@@ -42,20 +44,20 @@ onBackRegister() {
         <Scene key='main'>
           <Scene
            key='map'
-           component={MapView}
-           title='Map View'
+           component={MapScreen}
+           title='Map Screen'
            navigationBarStyle={showNavBarStyle}
            titleStyle={navBarTitleStyle}
            hideNavBar={false}
            leftTitle='Log Out'
-           onLeft={this.onLeftMapView.bind(this)}
+           onLeft={this.onLeftMapScreen.bind(this)}
            rightTitle='Test Nav'
-           onRight={() => Actions.test()}
+           onRight={() => Actions.account()}
           />
           <Scene
-           key='test'
+           key='account'
            component={Test}
-           title='Testing Nav'
+           title='Account Info'
            navigationBarStyle={showNavBarStyle}
            titleStyle={navBarTitleStyle}
            hideNavBar={false}
