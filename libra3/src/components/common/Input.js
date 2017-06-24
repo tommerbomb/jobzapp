@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput, View } from 'react-native';
-import { BACKGROUND_COLOR } from '../../styles/GlobalStyles';
+import { BACKGROUND_COLOR } from '../../../styles/GlobalStyles';
 
 const Input = ({ value, onChangeText, placeholder, secureTextEntry }) => {
   const { inputStyle, containerStyle } = styles;

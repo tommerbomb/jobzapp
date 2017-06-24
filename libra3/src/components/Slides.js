@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, Dimensions } from 'react-native';
 import { Button } from 'react-native-elements';
-import { BACKGROUND_COLOR } from '../styles/GlobalStyles';
+import { BACKGROUND_COLOR } from '../../styles/GlobalStyles';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 

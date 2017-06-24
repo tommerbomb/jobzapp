@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { emailChanged, passwordChanged, loginUser, registerReset } from '../actions';
 import { Input, Spinner, MainButton } from '../components/common';
-import { BACKGROUND_COLOR, FONT_COLOR, ERROR_COLOR } from '../styles/GlobalStyles';
+import { BACKGROUND_COLOR, FONT_COLOR, ERROR_COLOR } from '../../styles/GlobalStyles';
 
 class LoginScreen extends Component {
   static navigationOptions = {

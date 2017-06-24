@@ -1,7 +1,7 @@
 //Import libraries for making a Component
 import React from 'react';
 import { Text, View } from 'react-native';
-import { BACKGROUND_COLOR } from '../../styles/GlobalStyles';
+import { BACKGROUND_COLOR } from '../../../styles/GlobalStyles';
 
 //Make a Component
 const Footer = (props) => {

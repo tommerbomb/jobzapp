@@ -6,7 +6,7 @@ import WelcomeScreen from './screens/WelcomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import MapScreen from './screens/MapScreen';
-import { BACKGROUND_COLOR } from './styles/GlobalStyles';
+import { BACKGROUND_COLOR } from '../styles/GlobalStyles';
 import Test from './screens/Test';
 
 class RouterComponent extends Component {
@@ -27,7 +27,7 @@ onBackRegister() {
     const { showNavBarStyle, hideNavBarStyle, navBarTitleStyle } = styles;
 
     return (
-      <Router>
+      <Router panHandlers={null}>
         <Scene key='welcome' hideNavBar component={WelcomeScreen} />
         <Scene key='auth' >
           <Scene key='login' hideNavBar component={LoginScreen} />

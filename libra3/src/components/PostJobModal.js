@@ -3,7 +3,7 @@ import { Modal, Text, View } from 'react-native';
 import { CardSection } from './common/CardSection';
 import { MainButton } from './common/MainButton';
 
-const PostJobModal = ({ children, onAccept, onDecline, visible }) => {
+const PostJobModal = ({ children, onAccept, onDecline, visible, animationType }) => {
   const {
     containerStyle,
     textStyle,
@@ -13,7 +13,7 @@ const PostJobModal = ({ children, onAccept, onDecline, visible }) => {
 
   return (
     <Modal
-      animationType='slide'
+      animationType={animationType}
       onRequestClose={() => {}}
       transparent
       visible={visible}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
-import { BUTTON_COLOR } from '../../styles/GlobalStyles';
+import { BUTTON_COLOR } from '../../../styles/GlobalStyles';
 
 const MainButton = (props) => {
   const { buttonStyle, textStyle } = styles;

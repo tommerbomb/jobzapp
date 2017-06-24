@@ -3,9 +3,10 @@ import { Platform, StyleSheet, View, AlertIOS } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import { connect } from 'react-redux';
 import { logoutUser } from '../actions';
+import { marker } from '../../assets/icons/marker.png';
 import { MainButton, Spinner } from '../components/common';
 import { PostJobModal } from '../components/PostJobModal';
-import { BACKGROUND_COLOR } from '../styles/GlobalStyles';
+import { BACKGROUND_COLOR, BUTTON_COLOR } from '../../styles/GlobalStyles';
 
 class MapScreen extends Component {
 
@@ -18,10 +19,14 @@ class MapScreen extends Component {
      },
      errorMessage: null,
      loading: false,
-     showModal: false
+     showModal: false,
+     pinColor: BACKGROUND_COLOR,
+     onlineButtonText: 'Go Online',
+     online: false
    };
 
    async componentWillMount() {
+     console.log('Mounting MapScreen!');
      if (Platform.OS === 'android' && !Constants.isDevice) {
        this.setState({
          errorMessage:
@@ -34,15 +39,39 @@ class MapScreen extends Component {
      }
    }
 
+   onOnlineButtonPress() {
+    if (this.state.online) {
+      //if online go offline
+      this.setState({ pinColor: BACKGROUND_COLOR, online: false, onlineButtonText: 'Go Online' });
+    } else {
+      // if offline go online
+      this.setState({ pinColor: BUTTON_COLOR, online: true, onlineButtonText: 'Go Offline' });
+    }
+   }
+
+   onPanDrag(e) {
+     //const { latitude, longitude } = e;
+     console.log(e);
+     console.log('should be dragging');
+     //this.setState({ location: { ...this.state.location, latitude, longitude } });
+   }
+
+   onMarkerDrag(e) {
+     const { latitude, longitude } = e.nativeEvent.coordinate;
+     //this.setState({ location: { latitude, longitude } });
+     console.log(`latitude: ${latitude}`);
+     console.log(`longitude: ${longitude}`);
+   }
+
    getLocationAsync = async () => {
-     let { status } = await Permissions.askAsync(Permissions.LOCATION);
+     const { status } = await Permissions.askAsync(Permissions.LOCATION);
      if (status !== 'granted') {
        this.setState({
          errorMessage: 'Permission to access location was denied',
        });
        AlertIOS.alert('You need to allow JobZap to use your location');
      }
-     let location = await Location.getCurrentPositionAsync({});
+     const location = await Location.getCurrentPositionAsync({});
      this.setState({
        location: {
          ...this.state.location,
@@ -64,6 +93,10 @@ class MapScreen extends Component {
     return (
       <View style={{ flex: 1 }}>
       <MapView
+        loadingEnabled
+        onPanDrag={(e) => this.onPanDrag(e)}
+        showsTraffic
+        provider={'google'}
         style={styles.map}
         region={{
           latitude,
@@ -72,13 +105,15 @@ class MapScreen extends Component {
           longitudeDelta
         }}
       >
-      <MapView.Marker
-      coordinate={{
-        latitude,
-        longitude }}
-      title={JSON.stringify(this.props.user)}
-      />
-    </MapView>
+        <MapView.Marker
+        draggable
+        pinColor={this.state.pinColor}
+        coordinate={{
+          latitude,
+          longitude }}
+        onDrag={(e) => this.onMarkerDrag(e)}
+        />
+      </MapView>
       <View style={styles.buttonContainer}>
         <MainButton
         style={styles.buttonStyle}
@@ -86,11 +121,17 @@ class MapScreen extends Component {
         >
         Post Job
         </MainButton>
-        <MainButton>Go Online</MainButton>
+        <MainButton
+          onPress={this.onOnlineButtonPress.bind(this)}
+        >{this.state.onlineButtonText}
+      </MainButton>
       </View>
         <PostJobModal
+        animationType='slide'
         visible={this.state.showModal}
-        onDecline={this.changeModalVisibility.bind(this)}
+        onDecline={() => {
+          this.changeModalVisibility();
+        }}
         > Post a Job!!!
         </PostJobModal>
       </View>
