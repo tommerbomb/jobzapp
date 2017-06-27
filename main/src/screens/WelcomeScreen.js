@@ -12,6 +12,7 @@ const SLIDE_DATA = [
   { text: 'Set your location, then post away', color: BUTTON_COLOR }
 ];
 
+
 class WelcomeScreen extends Component {
   state = { token: null };
 

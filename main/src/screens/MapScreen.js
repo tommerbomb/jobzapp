@@ -11,14 +11,18 @@ import { BACKGROUND_COLOR, BUTTON_COLOR } from '../../styles/GlobalStyles';
 class MapScreen extends Component {
 
   state = {
-     location: {
+     screenLocation: {
        latitude: 122,
        longitude: 40,
        latitudeDelta: 0.1,
        longitudeDelta: 0.05
      },
+     markerLocation: {
+       latitude: 122,
+       longitude: 40
+     },
      errorMessage: null,
-     loading: false,
+     loaded: false,
      showModal: false,
      pinColor: BACKGROUND_COLOR,
      onlineButtonText: 'Go Online',
@@ -33,9 +37,7 @@ class MapScreen extends Component {
          'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
        });
      } else {
-       this.setState({ loading: true });
        this.getLocationAsync();
-       this.setState({ loading: false });
      }
    }
 
@@ -49,23 +51,28 @@ class MapScreen extends Component {
     }
    }
 
-   onPanDrag(e) {
-     //const { latitude, longitude } = e;
-     console.log(e);
-     console.log('should be dragging');
-     //this.setState({ location: { ...this.state.location, latitude, longitude } });
+   onRegionChange(e) {
+     if (this.state.loaded) {
+       const { latitude, longitude, latitudeDelta, longitudeDelta } = e;
+       console.log(e);
+       console.log('OnRegionChange is firing');
+       this.setState({ screenLocation: { latitude, longitude, latitudeDelta, longitudeDelta } });
+     }
    }
 
    onMarkerDrag(e) {
-     const { latitude, longitude } = e.nativeEvent.coordinate;
-     //this.setState({ location: { latitude, longitude } });
-     console.log(`latitude: ${latitude}`);
-     console.log(`longitude: ${longitude}`);
+     if (this.state.loaded) {
+       const { latitude, longitude } = e.nativeEvent.coordinate;
+       this.setState({ markerLocation: { latitude, longitude } });
+       console.log(`latitude: ${this.state.markerLocation.latitude}`);
+       console.log(`longitude: ${this.state.markerLocation.longitude}`);
+     }
    }
 
    getLocationAsync = async () => {
      const { status } = await Permissions.askAsync(Permissions.LOCATION);
      if (status !== 'granted') {
+       console.log('Permission denied');
        this.setState({
          errorMessage: 'Permission to access location was denied',
        });
@@ -73,10 +80,14 @@ class MapScreen extends Component {
      }
      const location = await Location.getCurrentPositionAsync({});
      this.setState({
-       location: {
-         ...this.state.location,
+       screenLocation: {
+         ...this.state.screenLocation,
          latitude: location.coords.latitude,
-         longitude: location.coords.longitude } });
+         longitude: location.coords.longitude },
+       markerLocation: {
+         latitude: location.coords.latitude,
+         longitude: location.coords.longitude
+       } }, () => { this.setState({ loaded: true }); });
    };
 
    changeModalVisibility() {
@@ -85,16 +96,12 @@ class MapScreen extends Component {
    }
 
   render() {
-    const { latitude, longitude, latitudeDelta, longitudeDelta } = this.state.location;
-    if (this.state.loading) {
-      return <Spinner />;
-    }
-
+    const { latitude, longitude, latitudeDelta, longitudeDelta } = this.state.screenLocation;
+    console.log(this.state.markerLocation);
     return (
       <View style={{ flex: 1 }}>
       <MapView
         loadingEnabled
-        onPanDrag={(e) => this.onPanDrag(e)}
         showsTraffic
         provider={'google'}
         style={styles.map}
@@ -104,13 +111,12 @@ class MapScreen extends Component {
           latitudeDelta,
           longitudeDelta
         }}
+        onRegionChange={(e) => this.onRegionChange(e)}
       >
         <MapView.Marker
         draggable
         pinColor={this.state.pinColor}
-        coordinate={{
-          latitude,
-          longitude }}
+        coordinate={this.state.markerLocation}
         onDrag={(e) => this.onMarkerDrag(e)}
         />
       </MapView>
