@@ -4,9 +4,9 @@ import { BUTTON_COLOR } from '../../../styles/GlobalStyles';
 
 const MainButton = (props) => {
   const { buttonStyle, textStyle } = styles;
-  const { onPress, children } = props;
+  const { onPress, children, disabled } = props;
   return (
-    <TouchableOpacity onPress={onPress} style={[buttonStyle, props.style]}>
+    <TouchableOpacity disabled={disabled} onPress={onPress} style={[buttonStyle, props.style]}>
       <Text style={[textStyle, props.textStyle]}>
         { children }
       </Text>

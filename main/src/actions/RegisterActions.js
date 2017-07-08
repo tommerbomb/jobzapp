@@ -74,7 +74,7 @@ export const createUser = ({ firstName, lastName, mobileNumber, email, password 
 const addUserInfo = (firstName, lastName, mobileNumber, email) => {
   const { currentUser } = firebase.auth();
     firebase.database().ref(`/users/${currentUser.uid}/info`)
-      .push({ firstName, lastName, mobileNumber, email });
+      .set({ firstName, lastName, mobileNumber, email });
 };
 
 const registerUserSuccess = (dispatch, user, email, password) => {

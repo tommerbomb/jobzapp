@@ -51,7 +51,7 @@ onBackRegister() {
            hideNavBar={false}
            leftTitle='Log Out'
            onLeft={this.onLeftMapScreen.bind(this)}
-           rightTitle='Test Nav'
+           rightTitle='Account'
            onRight={() => Actions.account()}
           />
           <Scene

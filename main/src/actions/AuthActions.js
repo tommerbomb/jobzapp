@@ -29,13 +29,23 @@ export const loginUser = ({ email, password }) => {
   return dispatch => {
   dispatch({ type: LOGIN_USER });
   firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(user => loginUserSuccess(dispatch, user))
+    .then(user => {
+      loginUserSuccess(dispatch, user);
+      firebase.database().ref(`/users/${firebase.auth().currentUser.uid}/status/loggedIn`)
+              .set(true);
+    })
         .catch(() => loginUserFail(dispatch));
   };
 };
 
 export const logoutUser = () => {
   return dispatch => {
+    const currentUser = firebase.auth().currentUser;
+    const DB = firebase.database();
+    DB.ref(`/users/${currentUser.uid}/status/loggedIn`)
+      .set(false);
+    DB.ref(`/users/${currentUser.uid}/status/online`)
+      .set(false);
     firebase.auth().signOut()
       .then(() => {
         dispatch({ type: LOGOUT_USER });

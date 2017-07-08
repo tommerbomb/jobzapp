@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import { Platform, StyleSheet, View, AlertIOS } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import { connect } from 'react-redux';
+import firebase from 'firebase';
 import { logoutUser } from '../actions';
-import { marker } from '../../assets/icons/marker.png';
-import { MainButton, Spinner } from '../components/common';
+import { MainButton } from '../components/common';
 import { PostJobModal } from '../components/PostJobModal';
 import { BACKGROUND_COLOR, BUTTON_COLOR } from '../../styles/GlobalStyles';
 
+
 class MapScreen extends Component {
 
+//need to move state to a redux implementation
   state = {
      screenLocation: {
        latitude: 122,
@@ -26,11 +28,13 @@ class MapScreen extends Component {
      showModal: false,
      pinColor: BACKGROUND_COLOR,
      onlineButtonText: 'Go Online',
-     online: false
+     online: false,
+     buttonDisabled: false
    };
 
    async componentWillMount() {
      console.log('Mounting MapScreen!');
+     this.updateUserOnlineStatus();
      if (Platform.OS === 'android' && !Constants.isDevice) {
        this.setState({
          errorMessage:
@@ -41,13 +45,21 @@ class MapScreen extends Component {
      }
    }
 
+//evt handlers
+
    onOnlineButtonPress() {
     if (this.state.online) {
       //if online go offline
-      this.setState({ pinColor: BACKGROUND_COLOR, online: false, onlineButtonText: 'Go Online' });
+      this.setState({
+        pinColor: BACKGROUND_COLOR,
+        online: false,
+        onlineButtonText: 'Go Online' }, () => this.updateUserOnlineStatus());
     } else {
       // if offline go online
-      this.setState({ pinColor: BUTTON_COLOR, online: true, onlineButtonText: 'Go Offline' });
+      this.setState({
+        pinColor: BUTTON_COLOR,
+        online: true,
+        onlineButtonText: 'Go Offline' }, () => this.updateUserOnlineStatus());
     }
    }
 
@@ -64,10 +76,13 @@ class MapScreen extends Component {
      if (this.state.loaded) {
        const { latitude, longitude } = e.nativeEvent.coordinate;
        this.setState({ markerLocation: { latitude, longitude } });
+       this.updateUserLocation(longitude, latitude);
        console.log(`latitude: ${this.state.markerLocation.latitude}`);
        console.log(`longitude: ${this.state.markerLocation.longitude}`);
      }
    }
+
+   //get location & update firebase DB
 
    getLocationAsync = async () => {
      const { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -88,7 +103,25 @@ class MapScreen extends Component {
          latitude: location.coords.latitude,
          longitude: location.coords.longitude
        } }, () => { this.setState({ loaded: true }); });
+
+        this.updateUserLocation(location.coords.longitude, location.coords.latitude);
    };
+
+   //firebase DB updates
+
+   updateUserLocation(longitude, latitude) {
+     const currentUser = firebase.auth().currentUser;
+     firebase.database().ref(`/users/${currentUser.uid}/location`)
+       .set({ longitude, latitude });
+   }
+
+   updateUserOnlineStatus() {
+     const currentUser = firebase.auth().currentUser;
+     firebase.database().ref(`/users/${currentUser.uid}/status/online`)
+       .set(this.state.online);
+   }
+
+   //modal visibility
 
    changeModalVisibility() {
      this.setState({ showModal: !this.state.showModal });
@@ -97,7 +130,7 @@ class MapScreen extends Component {
 
   render() {
     const { latitude, longitude, latitudeDelta, longitudeDelta } = this.state.screenLocation;
-    console.log(this.state.markerLocation);
+
     return (
       <View style={{ flex: 1 }}>
       <MapView
@@ -124,6 +157,7 @@ class MapScreen extends Component {
         <MainButton
         style={styles.buttonStyle}
         onPress={this.changeModalVisibility.bind(this)}
+        disabled={this.state.buttonDisabled}
         >
         Post Job
         </MainButton>
