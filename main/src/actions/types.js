@@ -17,3 +17,5 @@ export const REGISTER_RESET = 'register_reset';
 export const LOGGED_IN = 'logged_in';
 export const LOGGED_OUT = 'logged_out';
 export const LOCATION_CHANGED = 'location_changed';
+export const ONLINE_BUTTON_PRESSED = 'online_button_pressed';
+export const OFFLINE_BUTTON_PRESSED = 'offline_button_pressed';

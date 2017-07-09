@@ -3,7 +3,7 @@ import { Platform, StyleSheet, View, AlertIOS } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import { logoutUser } from '../actions';
+import { goOnline, goOffline } from '../actions';
 import { MainButton } from '../components/common';
 import { PostJobModal } from '../components/PostJobModal';
 import { BACKGROUND_COLOR, BUTTON_COLOR } from '../../styles/GlobalStyles';
@@ -11,7 +11,7 @@ import { BACKGROUND_COLOR, BUTTON_COLOR } from '../../styles/GlobalStyles';
 
 class MapScreen extends Component {
 
-//need to move state to a redux implementation
+// need to move state to a redux implementation
   state = {
      screenLocation: {
        latitude: 122,
@@ -26,9 +26,9 @@ class MapScreen extends Component {
      errorMessage: null,
      loaded: false,
      showModal: false,
-     pinColor: BACKGROUND_COLOR,
-     onlineButtonText: 'Go Online',
-     online: false,
+    //  pinColor: BACKGROUND_COLOR,
+    //  onlineButtonText: 'Go Online',
+    //  online: false,
      buttonDisabled: false
    };
 
@@ -49,18 +49,13 @@ class MapScreen extends Component {
 //evt handlers
 
    onOnlineButtonPress() {
-    if (this.state.online) {
-      //if online go offline
-      this.setState({
-        pinColor: BACKGROUND_COLOR,
-        online: false,
-        onlineButtonText: 'Go Online' }, () => this.updateUserOnlineStatus());
+     console.log(this.props.online);
+    if (this.props.online) {
+      this.props.goOffline();
+      console.log('going offline!!');
     } else {
-      // if offline go online
-      this.setState({
-        pinColor: BUTTON_COLOR,
-        online: true,
-        onlineButtonText: 'Go Offline' }, () => this.updateUserOnlineStatus());
+      console.log('going online!!');
+      this.props.goOnline();
     }
    }
 
@@ -121,7 +116,7 @@ class MapScreen extends Component {
    updateUserOnlineStatus() {
      const currentUser = firebase.auth().currentUser;
      firebase.database().ref(`/users/${currentUser.uid}/status/online`)
-       .set(this.state.online);
+       .set(this.props.online);
    }
 
    //modal visibility
@@ -153,7 +148,7 @@ class MapScreen extends Component {
       >
         <MapView.Marker
         draggable
-        pinColor={this.state.pinColor}
+        pinColor={this.props.pinColor}
         coordinate={this.state.markerLocation}
         onDrag={(e) => this.onMarkerDrag(e)}
         />
@@ -168,7 +163,7 @@ class MapScreen extends Component {
         </MainButton>
         <MainButton
           onPress={this.onOnlineButtonPress.bind(this)}
-        >{this.state.onlineButtonText}
+        >{this.props.onlineButtonText}
       </MainButton>
       </View>
         <PostJobModal
@@ -201,11 +196,11 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = ({ auth }) => {
-  const { user } = auth;
-  console.log(user);
-  return { user };
+const mapStateToProps = ({ location }) => {
+  const { screenLocation, markerLocation, errorMessage, loaded, showModal, pinColor, onlineButtonText, online, buttonDisabled } = location;
+
+  return { screenLocation, markerLocation, errorMessage, loaded, showModal, pinColor, onlineButtonText, online, buttonDisabled };
 };
 
 
-export default connect(mapStateToProps, { logoutUser })(MapScreen);
+export default connect(mapStateToProps, { goOnline, goOffline })(MapScreen);
