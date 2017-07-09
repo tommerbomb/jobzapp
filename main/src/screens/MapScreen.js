@@ -32,8 +32,9 @@ class MapScreen extends Component {
      buttonDisabled: false
    };
 
+// Determine the location of this device with getLocationAsync
    async componentWillMount() {
-     console.log('Mounting MapScreen!');
+     console.log('Inside componentWillMount MapScreen!');
      this.updateUserOnlineStatus();
      if (Platform.OS === 'android' && !Constants.isDevice) {
        this.setState({
@@ -111,6 +112,8 @@ class MapScreen extends Component {
 
    updateUserLocation(longitude, latitude) {
      const currentUser = firebase.auth().currentUser;
+     console.log(`Current User: ${currentUser}`);
+     console.log(`Props User: ${this.state.user}`);
      firebase.database().ref(`/users/${currentUser.uid}/location`)
        .set({ longitude, latitude });
    }
@@ -129,6 +132,8 @@ class MapScreen extends Component {
    }
 
   render() {
+    console.log('Rendering MapScreen!');
+
     const { latitude, longitude, latitudeDelta, longitudeDelta } = this.state.screenLocation;
 
     return (
@@ -198,6 +203,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = ({ auth }) => {
   const { user } = auth;
+  console.log(user);
   return { user };
 };
 
